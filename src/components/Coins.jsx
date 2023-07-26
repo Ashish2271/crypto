@@ -1,27 +1,28 @@
-import React, { useEffect, useState } from "react";
+
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { server } from "../main";
-import { Button, Container, HStack, Radio, RadioGroup } from "@chakra-ui/react";
+import { server } from "../main.jsx";
+import { Container, HStack, Radio, RadioGroup } from "@chakra-ui/react";
 import Loader from "./Loader";
 import ErrorComponent from "./ErrorComponent";
 import CoinCard from "./CoinCard";
+import ReactPaginate from "react-paginate";
+import "../styles/pagination.css"; 
 
 const Coins = () => {
   const [coins, setCoins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [page, setPage] = useState(1);
-  const [currency, setCurrency] = useState("inr");
+  const [currency, setCurrency] = useState("usd");
 
   const currencySymbol =
     currency === "inr" ? "₹" : currency === "eur" ? "€" : "$";
 
-  const changePage = (page) => {
-    setPage(page);
-    setLoading(true);
-  };
-
-  const btns = new Array(132).fill(1);
+    const changePage = ({ selected }) => {
+      setPage(selected + 1);
+      setLoading(true);
+    };
 
   useEffect(() => {
     const fetchCoins = async () => {
@@ -40,6 +41,10 @@ const Coins = () => {
   }, [currency, page]);
 
   if (error) return <ErrorComponent message={"Error While Fetching Coins"} />;
+
+  const totalPages = 101;
+
+  
 
   return (
     <Container maxW={"container.xl"}>
@@ -69,18 +74,30 @@ const Coins = () => {
             ))}
           </HStack>
 
-          <HStack w={"full"} overflowX={"auto"} p={"8"}>
-            {btns.map((item, index) => (
-              <Button
-                key={index}
-                bgColor={"blackAlpha.900"}
-                color={"white"}
-                onClick={() => changePage(index + 1)}
-              >
-                {index + 1}
-              </Button>
-            ))}
+          <HStack w={"full"}  p={"8"} justifyContent={'center'} transform={["scale(0.6)","scale(0.8)"]}>
+          <ReactPaginate
+              pageCount={totalPages}
+              pageRangeDisplayed={3}
+              marginPagesDisplayed={1}
+              previousLabel={"prev"}
+              nextLabel={"next"}
+              breakLabel={"..."}
+              containerClassName={"pagination"}
+              activeClassName={"pagination-link-active"}
+              pageClassName={"pagination-item"}
+              onPageChange={changePage}
+              forcePage={page - 1}
+              disableInitialCallback={true}
+              pageLinkClassName={"pagination-link"}
+              previousLinkClassName={"pagination-link"}
+              nextLinkClassName={"pagination-link"}
+              breakLinkClassName={"pagination-link"}
+              disabledClassName={"pagination-item-disabled"}
+              activeLinkClassName={"pagination-link-active"}
+            />
+            
           </HStack>
+          
         </>
       )}
     </Container>

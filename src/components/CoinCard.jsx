@@ -22,7 +22,7 @@ const CoinCard = ({ id, name, img, symbol, price, currencySymbol = "₹" }) => (
         w={"10"}
         h={"10"}
         objectFit={"contain"}
-        alt={"Exchange"}
+        alt={"Exchange"} 
       />
       <Heading size={"md"} noOfLines={1}>
         {symbol}
